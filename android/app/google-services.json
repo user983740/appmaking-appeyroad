@@ -1,0 +1,82 @@
+{
+  "project_info": {
+    "project_number": "82853880537",
+    "project_id": "calendar-management-233888",
+    "storage_bucket": "calendar-management-233888.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:82853880537:android:a0981b8802158c0975d4c8",
+        "android_client_info": {
+          "package_name": "com.bigwater.schedulenew"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "82853880537-s85d2h82n8blp3lcpcj5t96pq5rldejo.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC336ho8MZR6--_nP4BEGV89aN5DXh88rU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "82853880537-s85d2h82n8blp3lcpcj5t96pq5rldejo.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "82853880537-8jfm4ki6dscdf76njr99c14a2a18c02c.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.addFriend"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:82853880537:android:545a9751873332e175d4c8",
+        "android_client_info": {
+          "package_name": "com.example.calendar_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "82853880537-s85d2h82n8blp3lcpcj5t96pq5rldejo.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC336ho8MZR6--_nP4BEGV89aN5DXh88rU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "82853880537-s85d2h82n8blp3lcpcj5t96pq5rldejo.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "82853880537-8jfm4ki6dscdf76njr99c14a2a18c02c.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.addFriend"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
