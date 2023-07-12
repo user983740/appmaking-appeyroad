@@ -46,7 +46,7 @@ class MyApp extends StatelessWidget {
         ),
       ],
       child: MaterialApp(
-        title: 'Add friends',
+        title: 'Calendar App',
         theme: ThemeData(
           primarySwatch: Colors.grey,
         ),
