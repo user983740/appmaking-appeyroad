@@ -4,6 +4,8 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:kakao_flutter_sdk/kakao_flutter_sdk.dart';
+import 'package:kakao_flutter_sdk_common/kakao_flutter_sdk_common.dart';
 
 import 'logInPage.dart';
 import 'firebase_options.dart';
@@ -30,8 +32,13 @@ Future<void> main() async {
   await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform
   );
+  KakaoSdk.init(
+    nativeAppKey: '5097fd4d40b188803d6ef1c71aa88d3f',
+    javaScriptAppKey: '091e1a7886e05138feff81cdfd19a4bc',
+  );
   runApp(const MyApp());
 }
+
 
 //가장 기본 페이지
 class MyApp extends StatelessWidget {
