@@ -39,6 +39,7 @@ Future<void> main() async {
   runApp(const MyApp());
 }
 
+
 //가장 기본 페이지
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
