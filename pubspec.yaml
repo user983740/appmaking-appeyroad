@@ -42,7 +42,14 @@ dependencies:
   calendar_view: ^1.0.3
   date_range_form_field: ^1.0.2
   from_to_time_picker: ^1.1.1
-
+  kakao_flutter_sdk: ^1.5.0
+  dio: ^5.2.1+1
+  json_serializable: ^6.7.1
+  encrypt: ^5.0.1
+  crypto: ^3.0.3
+  shared_preferences: ^2.2.0
+  platform: ^3.1.0
+  
 dev_dependencies:
   flutter_test:
     sdk: flutter
