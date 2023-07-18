@@ -6,7 +6,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 
 import 'friendPage.dart';
 import 'scheduleView.dart';
-import 'teammaker.dart';
+import 'teamPage.dart';
 
 //바탕이 되는 페이지
 class MainPage extends StatefulWidget {
