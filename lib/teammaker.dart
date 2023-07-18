@@ -17,9 +17,37 @@ class _TeamMakerState extends State<TeamMaker> {
   String startTime = 'from';
   String endTime = 'to'
       '';
+  double _currentHourSliderValue = 2;
+  double _currentLeastMemberSliderValue = 1;
 
-  double _currentSliderValue = 0.0;
-  String? _sliderStatus;
+  List<String> addedFriendsList = ['추가하세요'];
+
+  void _showMultiSelect() async {
+    // a list of selectable items
+    // these items can be hard-coded or dynamically fetched from a database/API
+    final List<String> friendsList = [
+      'Flutter',
+      'Node.js',
+      'React Native',
+      'Java',
+      'Docker',
+      'MySQL'
+    ];
+
+    final List<String>? results = await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return MultiSelect(items: friendsList);
+      },
+    );
+
+    // Update UI
+    if (results != null) {
+      setState(() {
+        addedFriendsList = results;
+      });
+    }
+  }
 
   void showLightTimePicker() {
     showDialog(
@@ -41,109 +69,252 @@ class _TeamMakerState extends State<TeamMaker> {
       appBar: AppBar(
         title: const Text('팀 만들기'),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(30),
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(12.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(30),
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(12.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    SizedBox(
+                        width: 100,
+                        height: 40,
+                        child: TextField(
+                          decoration: InputDecoration(
+                            border: OutlineInputBorder(),
+                            labelText: '팀 이름',
+                          ),
+                        )),
+                    ElevatedButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      child: const Text('Complete'),
+                    ),
+                  ],
+                ),
+              ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  Padding(
+                    padding: const EdgeInsets.only(left: 12.0, top: 10),
+                    child: Text('날짜 선택'),
+                  ),
+                  DateRangeField(
+                      enabled: true,
+                      initialValue: DateTimeRange(
+                          start: DateTime.now(),
+                          end: DateTime.now().add(Duration(days: 5))),
+                      decoration: InputDecoration(
+                        labelText: 'Date Range',
+                        prefixIcon: Icon(Icons.date_range),
+                        hintText: 'Please select a start and end date',
+                        border: OutlineInputBorder(),
+                      ),
+                      validator: (value) {
+                        if (value!.start.isBefore(DateTime.now())) {
+                          return 'Please enter a later start date';
+                        }
+                        return null;
+                      },
+                      onSaved: (value) {
+                        setState(() {
+                          myDateRange = value!;
+                        });
+                      }),
+                ],
+              ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(left: 12.0, top: 10),
+                    child: Text('시간 선택'),
+                  ),
                   SizedBox(
-                      width: 100,
-                      height: 40,
+                      width: 430,
                       child: TextField(
+                        onTap: () => showLightTimePicker(),
                         obscureText: true,
                         decoration: InputDecoration(
                           border: OutlineInputBorder(),
-                          labelText: '팀 이름',
+                          labelText: '$startTime 시 ~ $endTime 시',
                         ),
-                      )),
-                  ElevatedButton(
-                    onPressed: () {
-                      Navigator.pop(context);
+                      ))
+                ],
+              ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(left: 12.0, top: 15),
+                    child: Row(
+                      children: [
+                        Icon(Icons.lock_clock),
+                        Text('약속 시간(hour)'),
+                        SizedBox(width: 30),
+                        Text(
+                          '$_currentHourSliderValue 시간',
+                          style: TextStyle(color: Colors.redAccent),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Slider(
+                    value: _currentHourSliderValue,
+                    max: 10,
+                    divisions: 10,
+                    label: _currentHourSliderValue.round().toString(),
+                    onChanged: (double value) {
+                      setState(() {
+                        _currentHourSliderValue = value;
+                      });
                     },
-                    child: const Text('Complete'),
                   ),
                 ],
               ),
-            ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(left: 12.0, top: 10),
-                  child: Text('날짜 선택'),
-                ),
-                DateRangeField(
-                    enabled: true,
-                    initialValue: DateTimeRange(
-                        start: DateTime.now(),
-                        end: DateTime.now().add(Duration(days: 5))),
-                    decoration: InputDecoration(
-                      labelText: 'Date Range',
-                      prefixIcon: Icon(Icons.date_range),
-                      hintText: 'Please select a start and end date',
-                      border: OutlineInputBorder(),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(left: 12.0, top: 15),
+                    child: Row(
+                      children: [
+                        Icon(Icons.people),
+                        Text('최소 포함 인원'),
+                        SizedBox(width: 30),
+                        Text(
+                          '$_currentLeastMemberSliderValue 명',
+                          style: TextStyle(color: Colors.redAccent),
+                        ),
+                      ],
                     ),
-                    validator: (value) {
-                      if (value!.start.isBefore(DateTime.now())) {
-                        return 'Please enter a later start date';
-                      }
-                      return null;
-                    },
-                    onSaved: (value) {
+                  ),
+                  Slider(
+                    value: _currentLeastMemberSliderValue,
+                    max: addedFriendsList.length.toDouble(),
+                    divisions: addedFriendsList.length,
+                    label: _currentLeastMemberSliderValue.round().toString(),
+                    onChanged: (double value) {
                       setState(() {
-                        myDateRange = value!;
+                        _currentLeastMemberSliderValue = value;
                       });
-                    }),
-              ],
-            ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(left: 12.0, top: 10),
-                  child: Text('시간 선택'),
-                ),
-                SizedBox(
-                    width: 430,
-                    child: TextField(
-                      onTap: () => showLightTimePicker(),
-                      obscureText: true,
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(),
-                        labelText: '$startTime to $endTime',
-                      ),
-                    ))
-              ],
-            ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(left: 12.0, top: 10),
-                  child: Text('약속 시간'),
-                ),
-                //  CupertinoSliderApp()
-              ],
-            ),
-          ],
+                    },
+                  ),
+                ],
+              ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(left: 12.0, top: 15),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Row(
+                          children: [
+                            Icon(Icons.people),
+                            Text('팀원'),
+                            SizedBox(width: 30),
+                            Text(
+                              '${addedFriendsList.length} 명',
+                              style: TextStyle(color: Colors.redAccent),
+                            ),
+                          ],
+                        ),
+                        ElevatedButton(
+                            onPressed: _showMultiSelect,
+                            child: const Text('Add friends'))
+                      ],
+                    ),
+                  ),
+                  Wrap(
+                    children: addedFriendsList
+                        .map((e) => Chip(
+                              label: Text(e),
+                            ))
+                        .toList(),
+                  )
+                ],
+              )
+            ],
+          ),
         ),
       ),
     );
   }
 }
 
-// class CupertinoSliderApp extends StatelessWidget {
-//   const CupertinoSliderApp({super.key});
+class MultiSelect extends StatefulWidget {
+  final List<String> items;
+  const MultiSelect({Key? key, required this.items}) : super(key: key);
 
-//   @override
-//   Widget build(BuildContext context) {
-//     return const CupertinoApp(
-//       theme: CupertinoThemeData(brightness: Brightness.light),
-//       home: CupertinoSliderExample(),
-//     );
-//   }
-// }
+  @override
+  State<MultiSelect> createState() => _MultiSelectState();
+}
+
+class _MultiSelectState extends State<MultiSelect> {
+  final List<String> _selectedItems = [];
+
+  void _itemChange(String itemValue, bool isSelected) {
+    setState(() {
+      if (isSelected) {
+        _selectedItems.add(itemValue);
+      } else {
+        _selectedItems.remove(itemValue);
+      }
+    });
+  }
+
+  // this function is called when the Cancel button is pressed
+  void _cancel() {
+    Navigator.pop(context);
+  }
+
+// this function is called when the Submit button is tapped
+  void _submit() {
+    Navigator.pop(context, _selectedItems);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        appBar: AppBar(
+          title: const Text('친구 추가'),
+        ),
+        body: SingleChildScrollView(
+          child: Column(
+            children: [
+              ListBody(
+                children: widget.items
+                    .map((item) => CheckboxListTile(
+                          value: _selectedItems.contains(item),
+                          title: Text(item),
+                          controlAffinity: ListTileControlAffinity.trailing,
+                          onChanged: (isChecked) =>
+                              _itemChange(item, isChecked!),
+                        ))
+                    .toList(),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  ElevatedButton(
+                    onPressed: _submit,
+                    child: const Text('Submit'),
+                  ),
+                  TextButton(
+                    onPressed: _cancel,
+                    child: const Text('Cancel'),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ));
+  }
+}
