@@ -20,12 +20,34 @@ class _TeamMakerState extends State<TeamMaker> {
   double _currentHourSliderValue = 2;
   double _currentLeastMemberSliderValue = 1;
 
-  final List<String> addedFriendsList = <String>[
-    'friend1',
-    'friend2',
-    'friend3',
-    'friend4'
-  ];
+  List<String> addedFriendsList = ['추가하세요'];
+
+  void _showMultiSelect() async {
+    // a list of selectable items
+    // these items can be hard-coded or dynamically fetched from a database/API
+    final List<String> friendsList = [
+      'Flutter',
+      'Node.js',
+      'React Native',
+      'Java',
+      'Docker',
+      'MySQL'
+    ];
+
+    final List<String>? results = await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return MultiSelect(items: friendsList);
+      },
+    );
+
+    // Update UI
+    if (results != null) {
+      setState(() {
+        addedFriendsList = results;
+      });
+    }
+  }
 
   void showLightTimePicker() {
     showDialog(
@@ -61,7 +83,6 @@ class _TeamMakerState extends State<TeamMaker> {
                         width: 100,
                         height: 40,
                         child: TextField(
-                          obscureText: true,
                           decoration: InputDecoration(
                             border: OutlineInputBorder(),
                             labelText: '팀 이름',
@@ -197,7 +218,7 @@ class _TeamMakerState extends State<TeamMaker> {
                         Row(
                           children: [
                             Icon(Icons.people),
-                            Text('팀원 추가하기'),
+                            Text('팀원'),
                             SizedBox(width: 30),
                             Text(
                               '${addedFriendsList.length} 명',
@@ -206,30 +227,18 @@ class _TeamMakerState extends State<TeamMaker> {
                           ],
                         ),
                         ElevatedButton(
-                            onPressed: () => Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => const AddFriends()),
-                                ),
+                            onPressed: _showMultiSelect,
                             child: const Text('Add friends'))
                       ],
                     ),
                   ),
-                  SizedBox(
-                    height: 500,
-                    child: ListView.builder(
-                        padding: const EdgeInsets.all(20),
-                        itemCount: addedFriendsList.length,
-                        itemBuilder: (BuildContext context, int index) {
-                          return ListTile(
-                            leading: Icon(Icons.person),
-                            title: Text('${addedFriendsList[index]}'),
-                            onTap: () {
-                              print('${addedFriendsList[index]} selected');
-                            },
-                          );
-                        }),
-                  ),
+                  Wrap(
+                    children: addedFriendsList
+                        .map((e) => Chip(
+                              label: Text(e),
+                            ))
+                        .toList(),
+                  )
                 ],
               )
             ],
@@ -240,16 +249,72 @@ class _TeamMakerState extends State<TeamMaker> {
   }
 }
 
-class AddFriends extends StatefulWidget {
-  const AddFriends({super.key});
+class MultiSelect extends StatefulWidget {
+  final List<String> items;
+  const MultiSelect({Key? key, required this.items}) : super(key: key);
 
   @override
-  State<AddFriends> createState() => _AddFriendsState();
+  State<MultiSelect> createState() => _MultiSelectState();
 }
 
-class _AddFriendsState extends State<AddFriends> {
+class _MultiSelectState extends State<MultiSelect> {
+  final List<String> _selectedItems = [];
+
+  void _itemChange(String itemValue, bool isSelected) {
+    setState(() {
+      if (isSelected) {
+        _selectedItems.add(itemValue);
+      } else {
+        _selectedItems.remove(itemValue);
+      }
+    });
+  }
+
+  // this function is called when the Cancel button is pressed
+  void _cancel() {
+    Navigator.pop(context);
+  }
+
+// this function is called when the Submit button is tapped
+  void _submit() {
+    Navigator.pop(context, _selectedItems);
+  }
+
   @override
   Widget build(BuildContext context) {
-    return const Placeholder();
+    return Scaffold(
+        appBar: AppBar(
+          title: const Text('친구 추가'),
+        ),
+        body: SingleChildScrollView(
+          child: Column(
+            children: [
+              ListBody(
+                children: widget.items
+                    .map((item) => CheckboxListTile(
+                          value: _selectedItems.contains(item),
+                          title: Text(item),
+                          controlAffinity: ListTileControlAffinity.trailing,
+                          onChanged: (isChecked) =>
+                              _itemChange(item, isChecked!),
+                        ))
+                    .toList(),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  ElevatedButton(
+                    onPressed: _submit,
+                    child: const Text('Submit'),
+                  ),
+                  TextButton(
+                    onPressed: _cancel,
+                    child: const Text('Cancel'),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ));
   }
 }
