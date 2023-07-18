@@ -4,8 +4,8 @@ import 'package:from_to_time_picker/from_to_time_picker.dart';
 
 import 'package:flutter/material.dart';
 
-class FriendsPage extends StatelessWidget {
-  const FriendsPage({super.key});
+class TeamPage extends StatelessWidget {
+  const TeamPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -127,7 +127,7 @@ class _ListsWidgetState extends State<ListsWidget> {
       children: [
         Expanded(
           child: SearchAnchor.bar(
-            barHintText: '${widget.subjective} 만들기',
+            barHintText: '${widget.subjective} 찾기',
             suggestionsBuilder:
                 (BuildContext context, SearchController controller) {
               return List<Widget>.generate(
