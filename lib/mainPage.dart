@@ -6,6 +6,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 
 import 'friendPage.dart';
 import 'scheduleView.dart';
+import 'teamPage.dart';
 
 //바탕이 되는 페이지
 class MainPage extends StatefulWidget {
@@ -23,7 +24,7 @@ class _MainPageState extends State<MainPage> {
   static const List<Widget> _widgetOptions = <Widget>[
     ScheduleView(),
     FriendPage(),
-    Text('Team'),
+    TeamPage(),
   ];
 
   @override
