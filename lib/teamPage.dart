@@ -35,8 +35,7 @@ class _FriendsListState extends State<FriendsList> {
   int tabIndex = 0;
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: DefaultTabController(
+    return DefaultTabController(
         length: 2,
         child: Scaffold(
             appBar: TabBar(
@@ -58,7 +57,6 @@ class _FriendsListState extends State<FriendsList> {
                 subjective: '친구',
               ),
             ])),
-      ),
     );
   }
 }
