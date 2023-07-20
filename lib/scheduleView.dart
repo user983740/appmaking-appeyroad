@@ -80,27 +80,29 @@ class ScheduleViewState extends State<ScheduleView> {
 
     stackChildren = stackChildren + schBoxes;
 
-    return Column(
-        children: [
-          Container(height: 50, color: Colors.white10, child: Visibility(visible: editing, child:
-          Row(children: [
-            Container(width:200, padding: EdgeInsets.all(5), child: nameEdit),
-            OutlinedButton(onPressed: () {
-              setState(() {
-                schBoxes.remove(editedBox);
-                editing = false;
-              });
-            }, child: Text("Delete"),),
-            Spacer(),
-            ElevatedButton(onPressed: () {_changeColor(Colors.redAccent);}, child: Text(""), style: ElevatedButton.styleFrom( primary: Colors.redAccent )),
-            ElevatedButton(onPressed: () {_changeColor(Colors.orangeAccent);}, child: Text(""), style: ElevatedButton.styleFrom( primary: Colors.orangeAccent )),
-            ElevatedButton(onPressed: () {_changeColor(Colors.yellowAccent);}, child: Text(""), style: ElevatedButton.styleFrom( primary: Colors.yellowAccent )),
-            ElevatedButton(onPressed: () {_changeColor(Colors.greenAccent);}, child: Text(""), style: ElevatedButton.styleFrom( primary: Colors.greenAccent )),
-            ElevatedButton(onPressed: () {_changeColor(Colors.blueAccent);}, child: Text(""), style: ElevatedButton.styleFrom( primary: Colors.blueAccent ))
-          ]))
-          ),
-          Container(height: 600, child: Stack(children:stackChildren),)
-        ]
+    return Scaffold(
+      body: Column(
+          children: [
+            Container(height: 50, color: Colors.white10, child: Visibility(visible: editing, child:
+            Row(children: [
+              Container(width:200, padding: EdgeInsets.all(5), child: nameEdit),
+              OutlinedButton(onPressed: () {
+                setState(() {
+                  schBoxes.remove(editedBox);
+                  editing = false;
+                });
+              }, child: Text("Delete"),),
+              Spacer(),
+              ElevatedButton(onPressed: () {_changeColor(Colors.redAccent);}, child: Text(""), style: ElevatedButton.styleFrom( primary: Colors.redAccent )),
+              ElevatedButton(onPressed: () {_changeColor(Colors.orangeAccent);}, child: Text(""), style: ElevatedButton.styleFrom( primary: Colors.orangeAccent )),
+              ElevatedButton(onPressed: () {_changeColor(Colors.yellowAccent);}, child: Text(""), style: ElevatedButton.styleFrom( primary: Colors.yellowAccent )),
+              ElevatedButton(onPressed: () {_changeColor(Colors.greenAccent);}, child: Text(""), style: ElevatedButton.styleFrom( primary: Colors.greenAccent )),
+              ElevatedButton(onPressed: () {_changeColor(Colors.blueAccent);}, child: Text(""), style: ElevatedButton.styleFrom( primary: Colors.blueAccent ))
+            ]))
+            ),
+            Container(height: 600, child: Stack(children:stackChildren),)
+          ]
+      ),
     );
 
     return Stack(

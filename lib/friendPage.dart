@@ -41,54 +41,56 @@ class _FriendPageState extends State<FriendPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-          Container(
-            alignment: Alignment.centerLeft,
-            child: const Text('친구 목록',
-                style: TextStyle(color: Colors.black, fontSize: 24)),
-          ), //친구 목록 Text 표시
-          Container(
-            alignment: Alignment.centerRight,
-            child: IconButton(
-              icon: const Icon(Icons.add_box),
-              onPressed: () {
-                showDialog(
-                    context: context,
-                    barrierDismissible: true,
-                    builder: (BuildContext context) {
-                      return const AddFriendDialog();
-                    });
+    return Scaffold(
+      body: Column(
+        children: [
+          Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+            Container(
+              alignment: Alignment.centerLeft,
+              child: const Text('친구 목록',
+                  style: TextStyle(color: Colors.black, fontSize: 24)),
+            ), //친구 목록 Text 표시
+            Container(
+              alignment: Alignment.centerRight,
+              child: IconButton(
+                icon: const Icon(Icons.add_box),
+                onPressed: () {
+                  showDialog(
+                      context: context,
+                      barrierDismissible: true,
+                      builder: (BuildContext context) {
+                        return const AddFriendDialog();
+                      });
+                },
+              ), //플러스 Icon을 선택하여 친구 추가
+            )
+          ]),
+          Expanded(
+            child: ListView.builder(
+              //추가된 친구들의 목록을 보여줌
+              padding: const EdgeInsets.all(8),
+              scrollDirection: Axis.vertical,
+              itemCount: context.watch<FriendList>().friendList.length,
+              itemBuilder: (BuildContext context, int index) {
+                return ListTile(
+                  //TextButton 하나가 친구 하나의 이름을 표시
+                  title: Text(
+                    context.watch<FriendList>().friendList[index],
+                    style: const TextStyle(color: Colors.black, fontSize: 18),
+                  ),
+                  trailing: IconButton(
+                    icon: const Icon(Icons.delete),
+                    onPressed: () {
+                      context.read<FriendList>().removeFriend(
+                          context.read<FriendList>().friendList[index]);
+                    },
+                  ),
+                );
               },
-            ), //플러스 Icon을 선택하여 친구 추가
-          )
-        ]),
-        Expanded(
-          child: ListView.builder(
-            //추가된 친구들의 목록을 보여줌
-            padding: const EdgeInsets.all(8),
-            scrollDirection: Axis.vertical,
-            itemCount: context.watch<FriendList>().friendList.length,
-            itemBuilder: (BuildContext context, int index) {
-              return ListTile(
-                //TextButton 하나가 친구 하나의 이름을 표시
-                title: Text(
-                  context.watch<FriendList>().friendList[index],
-                  style: const TextStyle(color: Colors.black, fontSize: 18),
-                ),
-                trailing: IconButton(
-                  icon: const Icon(Icons.delete),
-                  onPressed: () {
-                    context.read<FriendList>().removeFriend(
-                        context.read<FriendList>().friendList[index]);
-                  },
-                ),
-              );
-            },
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }
