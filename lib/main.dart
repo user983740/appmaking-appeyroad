@@ -36,6 +36,12 @@ Future<void> main() async {
     nativeAppKey: '5097fd4d40b188803d6ef1c71aa88d3f',
     javaScriptAppKey: '091e1a7886e05138feff81cdfd19a4bc',
   );
+  String? url = await receiveKakaoScheme();
+  kakaoSchemeStream.listen((url) {
+    var customUrlScheme = url;
+  }, onError: (e) {
+    // 에러 상황의 예외 처리 코드를 작성합니다.
+  });
   runApp(const MyApp());
 }
 
