@@ -1,8 +1,9 @@
-import 'dart:ui';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:date_range_form_field/date_range_form_field.dart';
 import 'package:from_to_time_picker/from_to_time_picker.dart';
 
 import 'package:flutter/material.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 
 class TeamMaker extends StatefulWidget {
   const TeamMaker({super.key});
@@ -11,12 +12,15 @@ class TeamMaker extends StatefulWidget {
   State<TeamMaker> createState() => _TeamMakerState();
 }
 
+GlobalKey<FormState> myFormKey = new GlobalKey();
+
 class _TeamMakerState extends State<TeamMaker> {
+  final _teamData = FirebaseFirestore.instance;
+  String teamName = '';
   DateTimeRange? myDateRange;
 
-  String startTime = 'from';
-  String endTime = 'to'
-      '';
+  String startTime = '';
+  String endTime = '';
   double _currentHourSliderValue = 2;
   double _currentLeastMemberSliderValue = 1;
 
@@ -63,6 +67,11 @@ class _TeamMakerState extends State<TeamMaker> {
             ));
   }
 
+  void _submitForm() {
+    final FormState? form = myFormKey.currentState;
+    form!.save();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -83,13 +92,39 @@ class _TeamMakerState extends State<TeamMaker> {
                         width: 100,
                         height: 40,
                         child: TextField(
+                          onChanged: (value) {
+                            teamName = value;
+                          },
                           decoration: InputDecoration(
                             border: OutlineInputBorder(),
                             labelText: '팀 이름',
                           ),
                         )),
                     ElevatedButton(
-                      onPressed: () {
+                      onPressed: () async {
+                        _submitForm();
+                        _teamData.collection("teams").add({
+                          "name": teamName,
+                          "dateRange": myDateRange,
+                          "startTime": startTime,
+                          "endTime": endTime,
+                          "hour": _currentHourSliderValue,
+                          "leastMember": _currentLeastMemberSliderValue,
+                          "addedFriends": addedFriendsList
+                        });
+                        // {
+                        //   "name": teamName,
+                        //   "dateRange": myDateRange,
+                        //   "startTime": startTime,
+                        //   "endTime": endTime,
+                        //   "hour": _currentHourSliderValue,
+                        //   "leastMember": _currentLeastMemberSliderValue,
+                        //   "addedFriends": addedFriendsList
+                        // }
+
+                        // print(
+                        //     '$teamName $myDateRange $startTime $endTime $_currentHourSliderValue $_currentLeastMemberSliderValue $addedFriendsList');
+
                         Navigator.pop(context);
                       },
                       child: const Text('Complete'),
@@ -104,28 +139,38 @@ class _TeamMakerState extends State<TeamMaker> {
                     padding: const EdgeInsets.only(left: 12.0, top: 10),
                     child: Text('날짜 선택'),
                   ),
-                  DateRangeField(
-                      enabled: true,
-                      initialValue: DateTimeRange(
-                          start: DateTime.now(),
-                          end: DateTime.now().add(Duration(days: 5))),
-                      decoration: InputDecoration(
-                        labelText: 'Date Range',
-                        prefixIcon: Icon(Icons.date_range),
-                        hintText: 'Please select a start and end date',
-                        border: OutlineInputBorder(),
-                      ),
-                      validator: (value) {
-                        if (value!.start.isBefore(DateTime.now())) {
-                          return 'Please enter a later start date';
-                        }
-                        return null;
-                      },
-                      onSaved: (value) {
-                        setState(() {
-                          myDateRange = value!;
-                        });
-                      }),
+                  Form(
+                    key: myFormKey,
+                    child: Column(
+                      children: [
+                        SafeArea(
+                          child: DateRangeField(
+                            enabled: true,
+                            initialValue: DateTimeRange(
+                                start: DateTime.now(),
+                                end: DateTime.now().add(Duration(days: 5))),
+                            decoration: InputDecoration(
+                              labelText: 'Date Range',
+                              prefixIcon: Icon(Icons.date_range),
+                              hintText: 'Please select a start and end date',
+                              border: OutlineInputBorder(),
+                            ),
+                            validator: (value) {
+                              if (value!.start.isBefore(DateTime.now())) {
+                                return 'Please enter a later start date';
+                              }
+                              return null;
+                            },
+                            onSaved: (value) {
+                              setState(() {
+                                myDateRange = value!;
+                              });
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                 ],
               ),
               Column(
@@ -227,8 +272,7 @@ class _TeamMakerState extends State<TeamMaker> {
                           ],
                         ),
                         ElevatedButton(
-                            onPressed: _showMultiSelect,
-                            child: const Text('Add friends'))
+                            onPressed: _showMultiSelect, child: Icon(Icons.add))
                       ],
                     ),
                   ),
