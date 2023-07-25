@@ -6,6 +6,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:kakao_flutter_sdk/kakao_flutter_sdk.dart';
 import 'package:kakao_flutter_sdk_user/src/model/user.dart' as KakaoUser;
 
+import 'main.dart';
 import 'mainPage.dart';
 import 'signUpPage.dart';
 
@@ -89,6 +90,9 @@ class _LogInPageState extends State<LogInPage> {
               ),
             ),
             //텍스트 입력
+
+            /// Original ID&PW text fields made by Minseok Seo
+           /*
             Positioned(
               top: 180,
               child: Container(
@@ -226,7 +230,11 @@ class _LogInPageState extends State<LogInPage> {
                 ),
               ),
             ),
-            //입력 버튼(right arrow)
+            */
+
+            ///입력 버튼(right arrow)
+
+            /*
             Positioned(
               top: 380,
               right: 0,
@@ -240,6 +248,9 @@ class _LogInPageState extends State<LogInPage> {
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(50),
                   ),
+
+
+
                   child: GestureDetector(
                     onTap: () async {
                       try {
@@ -288,9 +299,11 @@ class _LogInPageState extends State<LogInPage> {
                       ),
                     ),
                   ),
+
+
                 ),
               ),
-            ),
+            ), */
             //회원가입
             Positioned(
               top: MediaQuery.of(context).size.height - 150,
@@ -302,7 +315,8 @@ class _LogInPageState extends State<LogInPage> {
                     height: 1,
                   ),
 
-
+                  /// original 'sign up' button made by Minseok Seo
+                  /*
                   TextButton.icon(
                     onPressed: () {
                       Navigator.push(
@@ -328,27 +342,31 @@ class _LogInPageState extends State<LogInPage> {
                       style: TextStyle(color: Colors.white),
                     ),
                   ),
+                  */
 
-                  TextButton.icon(
-                    onPressed: () async {
-                      if (await isKakaoTalkInstalled()) {
-                        try {
-                          await UserApi.instance.loginWithKakaoTalk();
-                          print('카카오톡으로 로그인 성공');
-                          _get_user_info();
-                        } catch (error) {
-                          print('카카오톡으로 로그인 실패 $error');
+                  // Kakao login button
+                  GestureDetector(
+                      child: Container(
+                          width:183,
+                          height: 45,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            image: DecorationImage(
+                                image:AssetImage("assets/images/kakao_login_medium_narrow.png"),
+                                fit:BoxFit.cover
+                            ), // button text
+                          )
+                      ),onTap:() async {
+                    if (await isKakaoTalkInstalled()) {
+                      try {
+                        await UserApi.instance.loginWithKakaoTalk();
 
-                          // 카카오톡에 연결된 카카오계정이 없는 경우, 카카오계정으로 로그인
-                          try {
-                            await UserApi.instance.loginWithKakaoAccount();
-                            print('카카오계정으로 로그인 성공');
-                             _get_user_info();
-                          } catch (error) {
-                            print('카카오계정으로 로그인 실패 $error');
-                          }
-                        }
-                      } else {
+                        print('카카오톡으로 로그인 성공');
+                        _get_user_info();
+                      } catch (error) {
+                        print('카카오톡으로 로그인 실패 $error');
+
+                        // 카카오톡에 연결된 카카오계정이 없는 경우, 카카오계정으로 로그인
                         try {
                           await UserApi.instance.loginWithKakaoAccount();
                           print('카카오계정으로 로그인 성공');
@@ -357,22 +375,17 @@ class _LogInPageState extends State<LogInPage> {
                           print('카카오계정으로 로그인 실패 $error');
                         }
                       }
-                    },
-                    style: TextButton.styleFrom(
-                      disabledForegroundColor: Colors.white,
-                      minimumSize: const Size(155, 40),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      backgroundColor: Colors.red.shade700,
-                    ),
-                    icon: const Icon(Icons.add, color: Colors.white),
-                    label: const Text(
-                      'Kakao Talk Demonstration',
-                      style: TextStyle(color: Colors.white),
-                    ),
+                    } else {
+                      try {
+                        await UserApi.instance.loginWithKakaoAccount();
+                        print('카카오계정으로 로그인 성공');
+                        _get_user_info();
+                      } catch (error) {
+                        print('카카오계정으로 로그인 실패 $error');
+                      }
+                    }
+                  }
                   ),
-
 
                 ],
               ),
@@ -385,13 +398,73 @@ class _LogInPageState extends State<LogInPage> {
 
   void _get_user_info() async {
     try {
-      KakaoUser.User user = await UserApi.instance.me();
-      print('사용자 정보 요청 성공'
-          '\n회원번호: ${user.id}'
-          '\n닉네임: ${user.kakaoAccount?.profile?.nickname}');
+      MyApp.user = await UserApi.instance.me();
     } catch (error) {
       print('사용자 정보 요청 실패 $error');
     }
+
+    // 사용자의 추가 동의가 필요한 사용자 정보 동의 항목 확인
+    List<String> scopes = [];
+    //scopes.add("birthday");
+
+    if (MyApp.user.kakaoAccount?.emailNeedsAgreement == true) {
+      scopes.add('account_email');
+    }
+    if (MyApp.user.kakaoAccount?.birthdayNeedsAgreement == true) {
+      scopes.add("birthday");
+    }
+    if (MyApp.user.kakaoAccount?.birthyearNeedsAgreement == true) {
+      scopes.add("birthyear");
+    }
+    if (MyApp.user.kakaoAccount?.ciNeedsAgreement == true) {
+      scopes.add("account_ci");
+    }
+    if (MyApp.user.kakaoAccount?.phoneNumberNeedsAgreement == true) {
+      scopes.add("phone_number");
+    }
+    if (MyApp.user.kakaoAccount?.profileNeedsAgreement == true) {
+      scopes.add("profile");
+    }
+    if (MyApp.user.kakaoAccount?.ageRangeNeedsAgreement == true) {
+      scopes.add("age_range");
+    }
+
+    if (scopes.length > 0) {
+      print('사용자에게 추가 동의 받아야 하는 항목이 있습니다');
+
+      // OpenID Connect 사용 시
+      // scope 목록에 "openid" 문자열을 추가하고 요청해야 함
+      // 해당 문자열을 포함하지 않은 경우, ID 토큰이 재발급되지 않음
+      // scopes.add("openid")
+
+      // scope 목록을 전달하여 추가 항목 동의 받기 요청
+      // 지정된 동의 항목에 대한 동의 화면을 거쳐 다시 카카오 로그인 수행
+      OAuthToken token;
+      try {
+        token = await UserApi.instance.loginWithNewScopes(scopes);
+        print('현재 사용자가 동의한 동의 항목: ${token.scopes}');
+      } catch (error) {
+        print('추가 동의 요청 실패 $error');
+        return;
+      }
+    }
+
+    // 사용자 정보 재요청
+    try {
+      MyApp.user = await UserApi.instance.me();
+      print('사용자 정보 요청 성공'
+          '\n회원번호: ${MyApp.user.id}'
+          '\nkakaoAccount: ${MyApp.user.kakaoAccount}'
+          '\n닉네임: ${MyApp.user.kakaoAccount?.profile?.nickname}'
+          '\n이메일: ${MyApp.user.kakaoAccount?.email}'
+          '\n생일: ${MyApp.user.kakaoAccount?.birthday}'
+      );
+    } catch (error) {
+      print('사용자 정보 요청 실패 $error');
+    }
+    print('모든 로그인 프로세스 종료');
   }
+
+
 
 }
