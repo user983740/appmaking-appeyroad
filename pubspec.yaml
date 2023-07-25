@@ -49,6 +49,8 @@ dependencies:
   crypto: ^3.0.3
   shared_preferences: ^2.2.0
   platform: ^3.1.0
+  custom_date_range_picker: ^1.0.6
+  intl: ^0.17.0
   
 dev_dependencies:
   flutter_test:
