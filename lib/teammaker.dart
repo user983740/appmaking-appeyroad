@@ -1,9 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:date_range_form_field/date_range_form_field.dart';
+import 'package:custom_date_range_picker/custom_date_range_picker.dart';
 import 'package:from_to_time_picker/from_to_time_picker.dart';
+import 'package:intl/intl.dart';
 
 import 'package:flutter/material.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class TeamMaker extends StatefulWidget {
   const TeamMaker({super.key});
@@ -16,15 +18,19 @@ GlobalKey<FormState> myFormKey = new GlobalKey();
 
 class _TeamMakerState extends State<TeamMaker> {
   final _teamData = FirebaseFirestore.instance;
+
   String teamName = '';
-  DateTimeRange? myDateRange;
+  DateTime startDate = DateTime.now();
+  DateTime endDate = DateTime.now().add(const Duration(days: 5));
+  String formattedStartDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
+  String formattedEndDate = DateFormat('yyyy-MM-dd')
+      .format(DateTime.now().add(const Duration(days: 5)));
 
   String startTime = '';
   String endTime = '';
   double _currentHourSliderValue = 2;
   double _currentLeastMemberSliderValue = 1;
-
-  List<String> addedFriendsList = ['추가하세요'];
+  List<String> addedFriendsList = ['추가하세요', '친구를'];
 
   void _showMultiSelect() async {
     // a list of selectable items
@@ -58,18 +64,12 @@ class _TeamMakerState extends State<TeamMaker> {
         context: context,
         builder: (_) => FromToTimePicker(
               onTab: (from, to) {
-                print('from $from to $to');
                 setState(() {
                   startTime = from.hour.toString();
                   endTime = to.hour.toString();
                 });
               },
             ));
-  }
-
-  void _submitForm() {
-    final FormState? form = myFormKey.currentState;
-    form!.save();
   }
 
   @override
@@ -101,29 +101,17 @@ class _TeamMakerState extends State<TeamMaker> {
                           ),
                         )),
                     ElevatedButton(
-                      onPressed: () async {
-                        _submitForm();
-                        _teamData.collection("teams").add({
+                      onPressed: () {
+                        _teamData.collection('teams').add({
                           "name": teamName,
-                          "dateRange": myDateRange,
+                          "startDate": startDate.millisecondsSinceEpoch,
+                          "endDate": endDate.millisecondsSinceEpoch,
                           "startTime": startTime,
                           "endTime": endTime,
                           "hour": _currentHourSliderValue,
                           "leastMember": _currentLeastMemberSliderValue,
                           "addedFriends": addedFriendsList
                         });
-                        // {
-                        //   "name": teamName,
-                        //   "dateRange": myDateRange,
-                        //   "startTime": startTime,
-                        //   "endTime": endTime,
-                        //   "hour": _currentHourSliderValue,
-                        //   "leastMember": _currentLeastMemberSliderValue,
-                        //   "addedFriends": addedFriendsList
-                        // }
-
-                        // print(
-                        //     '$teamName $myDateRange $startTime $endTime $_currentHourSliderValue $_currentLeastMemberSliderValue $addedFriendsList');
 
                         Navigator.pop(context);
                       },
@@ -139,38 +127,39 @@ class _TeamMakerState extends State<TeamMaker> {
                     padding: const EdgeInsets.only(left: 12.0, top: 10),
                     child: Text('날짜 선택'),
                   ),
-                  Form(
-                    key: myFormKey,
-                    child: Column(
-                      children: [
-                        SafeArea(
-                          child: DateRangeField(
-                            enabled: true,
-                            initialValue: DateTimeRange(
-                                start: DateTime.now(),
-                                end: DateTime.now().add(Duration(days: 5))),
-                            decoration: InputDecoration(
-                              labelText: 'Date Range',
-                              prefixIcon: Icon(Icons.date_range),
-                              hintText: 'Please select a start and end date',
-                              border: OutlineInputBorder(),
-                            ),
-                            validator: (value) {
-                              if (value!.start.isBefore(DateTime.now())) {
-                                return 'Please enter a later start date';
-                              }
-                              return null;
-                            },
-                            onSaved: (value) {
-                              setState(() {
-                                myDateRange = value!;
-                              });
-                            },
-                          ),
-                        ),
-                      ],
-                    ),
+                  FloatingActionButton(
+                    onPressed: () {
+                      showCustomDateRangePicker(
+                        context,
+                        dismissible: true,
+                        minimumDate:
+                            DateTime.now().subtract(const Duration(days: 30)),
+                        maximumDate:
+                            DateTime.now().add(const Duration(days: 30)),
+                        endDate: endDate,
+                        startDate: startDate,
+                        backgroundColor: Colors.white,
+                        onApplyClick: (start, end) {
+                          setState(() {
+                            endDate = end;
+                            startDate = start;
+                            formattedStartDate =
+                                DateFormat('yyyy-MM-dd').format(start);
+                            formattedEndDate =
+                                DateFormat('yyyy-MM-dd').format(end);
+                          });
+                        },
+                        onCancelClick: () {},
+                      );
+                    },
+                    tooltip: 'choose date Range',
+                    child: const Icon(Icons.calendar_today_outlined,
+                        color: Colors.white),
                   ),
+                  if (startDate != null)
+                    SizedBox(
+                        child:
+                            Text('${formattedStartDate} - $formattedEndDate'))
                 ],
               ),
               Column(
