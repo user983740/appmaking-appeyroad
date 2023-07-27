@@ -64,7 +64,6 @@ class _TeamMakerState extends State<TeamMaker> {
         context: context,
         builder: (_) => FromToTimePicker(
               onTab: (from, to) {
-                print('from $from to $to');
                 setState(() {
                   startTime = from.hour.toString();
                   endTime = to.hour.toString();

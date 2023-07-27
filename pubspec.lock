@@ -457,7 +457,7 @@ packages:
     source: hosted
     version: "1.5.0"
   kakao_flutter_sdk_talk:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: kakao_flutter_sdk_talk
       sha256: "110ed5c7f8f0d11c855c455e195bd7266daa150055219bf2e5f2d279b757cf85"
@@ -473,7 +473,7 @@ packages:
     source: hosted
     version: "1.5.0"
   kakao_flutter_sdk_user:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: kakao_flutter_sdk_user
       sha256: "273facdeed0c393b1068cce43e704f77f5acc8dd321d138a4265c9e327e70352"

@@ -1,4 +1,5 @@
 import 'dart:ui';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:date_range_form_field/date_range_form_field.dart';
 import 'package:from_to_time_picker/from_to_time_picker.dart';
 
@@ -145,17 +146,23 @@ class _ListsWidgetState extends State<ListsWidget> {
         ),
         Expanded(
           flex: 8,
-          child: ListView.builder(
-              padding: const EdgeInsets.all(20),
-              itemCount: widget.lists.length,
-              itemBuilder: (BuildContext context, int index) {
-                return ListTile(
-                  leading: Icon(Icons.person),
-                  title: Text('${widget.lists[index]}'),
-                  onTap: () {
-                    print('${widget.lists[index]} selected');
-                  },
-                );
+          child: StreamBuilder(
+              stream:
+                  FirebaseFirestore.instance.collection('teams').snapshots(),
+              builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                if (!snapshot.hasData) return const Text("Loading...");
+                return ListView.builder(
+                    padding: const EdgeInsets.all(20),
+                    itemCount: widget.lists.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      return ListTile(
+                        leading: Icon(Icons.person),
+                        title: Text('${widget.lists[index]}'),
+                        onTap: () {
+                          print('${snapshot.data}');
+                        },
+                      );
+                    });
               }),
         ),
         Expanded(
