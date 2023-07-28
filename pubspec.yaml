@@ -50,10 +50,7 @@ dependencies:
   shared_preferences: ^2.2.0
   platform: ^3.1.0
   custom_date_range_picker: ^1.0.6
-  intl: ^0.17.0
-  kakao_flutter_sdk_user: ^1.4.1 # 카카오 로그인
-  kakao_flutter_sdk_talk: ^1.4.1 # 카카오톡 메시지, 카카오톡 소셜(프로필 가져오기, 친구 목록 가져오기)
-
+  
 dev_dependencies:
   flutter_test:
     sdk: flutter
