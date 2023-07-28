@@ -36,7 +36,8 @@ class _FriendsListState extends State<FriendsList> {
   int tabIndex = 0;
   @override
   Widget build(BuildContext context) {
-    return DefaultTabController(
+    return MaterialApp(
+      home: DefaultTabController(
         length: 2,
         child: Scaffold(
             appBar: TabBar(
@@ -58,6 +59,7 @@ class _FriendsListState extends State<FriendsList> {
                 subjective: '친구',
               ),
             ])),
+      ),
     );
   }
 }
@@ -132,7 +134,7 @@ class _ListsWidgetState extends State<ListsWidget> {
                 (BuildContext context, SearchController controller) {
               return List<Widget>.generate(
                 5,
-                (int index) {
+                    (int index) {
                   return ListTile(
                     titleAlignment: ListTileTitleAlignment.center,
                     title: Text('Initial list item $index'),
@@ -146,7 +148,7 @@ class _ListsWidgetState extends State<ListsWidget> {
           flex: 8,
           child: StreamBuilder(
               stream:
-                  FirebaseFirestore.instance.collection('teams').snapshots(),
+              FirebaseFirestore.instance.collection('teams').snapshots(),
               builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
                 if (!snapshot.hasData) return const Text("Loading...");
                 return ListView.builder(
