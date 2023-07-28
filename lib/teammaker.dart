@@ -63,13 +63,13 @@ class _TeamMakerState extends State<TeamMaker> {
     showDialog(
         context: context,
         builder: (_) => FromToTimePicker(
-              onTab: (from, to) {
-                setState(() {
-                  startTime = from.hour.toString();
-                  endTime = to.hour.toString();
-                });
-              },
-            ));
+          onTab: (from, to) {
+            setState(() {
+              startTime = from.hour.toString();
+              endTime = to.hour.toString();
+            });
+          },
+        ));
   }
 
   @override
@@ -133,9 +133,9 @@ class _TeamMakerState extends State<TeamMaker> {
                         context,
                         dismissible: true,
                         minimumDate:
-                            DateTime.now().subtract(const Duration(days: 30)),
+                        DateTime.now().subtract(const Duration(days: 30)),
                         maximumDate:
-                            DateTime.now().add(const Duration(days: 30)),
+                        DateTime.now().add(const Duration(days: 30)),
                         endDate: endDate,
                         startDate: startDate,
                         backgroundColor: Colors.white,
@@ -159,7 +159,7 @@ class _TeamMakerState extends State<TeamMaker> {
                   if (startDate != null)
                     SizedBox(
                         child:
-                            Text('${formattedStartDate} - $formattedEndDate'))
+                        Text('${formattedStartDate} - $formattedEndDate'))
                 ],
               ),
               Column(
@@ -268,8 +268,8 @@ class _TeamMakerState extends State<TeamMaker> {
                   Wrap(
                     children: addedFriendsList
                         .map((e) => Chip(
-                              label: Text(e),
-                            ))
+                      label: Text(e),
+                    ))
                         .toList(),
                   )
                 ],
@@ -325,12 +325,12 @@ class _MultiSelectState extends State<MultiSelect> {
               ListBody(
                 children: widget.items
                     .map((item) => CheckboxListTile(
-                          value: _selectedItems.contains(item),
-                          title: Text(item),
-                          controlAffinity: ListTileControlAffinity.trailing,
-                          onChanged: (isChecked) =>
-                              _itemChange(item, isChecked!),
-                        ))
+                  value: _selectedItems.contains(item),
+                  title: Text(item),
+                  controlAffinity: ListTileControlAffinity.trailing,
+                  onChanged: (isChecked) =>
+                      _itemChange(item, isChecked!),
+                ))
                     .toList(),
               ),
               Row(
