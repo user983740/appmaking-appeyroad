@@ -6,6 +6,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:kakao_flutter_sdk/kakao_flutter_sdk.dart';
 import 'package:kakao_flutter_sdk_common/kakao_flutter_sdk_common.dart';
+import 'package:kakao_flutter_sdk_user/src/model/user.dart' as KakaoUser;
 
 import 'logInPage.dart';
 import 'firebase_options.dart';
@@ -49,6 +50,13 @@ Future<void> main() async {
 //가장 기본 페이지
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
+
+  static late KakaoUser.User user;
+
+  static String? getUserID() {return user.kakaoAccount?.email;}
+  static String? getUserNickname() {return user.kakaoAccount?.profile?.nickname;}
+  ///Get the kakao user's birthday. Format is "MMDD" ex) Feburary 14th is "0214"
+  static String? getUserBirthday() {return  user.kakaoAccount?.birthday;}
 
   @override
   Widget build(BuildContext context) {
