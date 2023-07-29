@@ -5,9 +5,6 @@
    <application
        android:label="calendar_app"
        tools:ignore="NewApi">
-       <action android:name="android.intent.action.VIEW" />
-       <category android:name="android.intent.category.DEFAULT" />
-       <category android:name="android.intent.category.BROWSABLE" />
        <!-- 카카오 로그인 커스텀 URL 스킴 설정 -->
        <activity
            android:name="com.kakao.sdk.flutter.AuthCodeCustomTabsActivity"
@@ -37,6 +34,7 @@
                  to determine the Window background behind the Flutter UI. -->
             <meta-data
               android:name="io.flutter.embedding.android.NormalTheme"
+                android:resource="@style/NormalTheme"
               />
             <meta-data
                 android:name="flutterEmbedding"
